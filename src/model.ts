@@ -3,7 +3,7 @@ import { IToDoItem } from "./core/toDoItem";
 const getActionFromUser = (): [IToDoItem[], string] => {
 	return [
 		[
-			{header:"eat dinner", state:0},
+			{header:"eat dinner", state:1},
 			{header:"wash dishes", state:0},
 			{header:"go to sleep", state:0}
 		], "hi"];
