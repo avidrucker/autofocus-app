@@ -1,424 +1,430 @@
-// import fs from "fs";
-// import readlineSync from "readline-sync";
+import fs from "fs";
+import readlineSync from "readline-sync";
 
-// import { conductFocus } from "./focus";
-// import { greetUser } from "./main";
-// import {
-//   readyToReview,
-//   setupReview,
-//   determineReviewStart,
-//   numberAndSlice
-// } from "./review";
-// import { constructNewTodoItem, ITodoItem, TodoState } from "./todoItem";
-// import {
-//   addTodoToList,
-//   makePrintableTodoItemList,
-//   undotAll,
-//   itemExists,
-//   getCMWTD,
-//   indexOfItem
-// } from "./todoList";
-// import { getPluralS, isEmpty } from "./util";
-// import { INumberedItem } from "./numberedItem";
+import { conductFocus } from "./focus";
+import { greetUser } from "./main";
+import {
+  readyToReview,
+  setupReview,
+  determineReviewStart,
+  numberAndSlice
+} from "./review";
+import { constructNewTodoItem, IToDoItem, TodoState } from "./toDoItem";
+import { getPluralS, isEmpty } from "./util";
+import { INumberedItem } from "./numberedItem";
+import { itemExists, getCMWTD, makePrintableTodoItemList, indexOfItem, addTodoToList, undotAll } from "./toDoList";
 
-// // ****************************************
-// // PROMPTS
-// // ****************************************
+// ****************************************
+// PROMPTS
+// ****************************************
 
-// const newItemTitlePrompt = `Enter todo item name \
-// (ie. wash the dishes). Enter 'Q' to quit: `;
-// //// 113. const newItemBodyPrompt = "Give your todo item a comment (ie. use \
-// //// dishwasher for non-glass items) or hit ENTER key to skip: ";
-// const menuPrompt = "Please choose from the menu above:";
+const newItemTitlePrompt = `Enter to-do item name \
+(ie. wash the dishes). Enter 'Q' to quit: `;
+const menuPrompt = "Please choose from the menu above:";
 
-// enum MainMenuChoice {
-//   AddNew = "Add New Todo",
-//   ReviewTodos = "Review & Dot Todos",
-//   EnterFocus = "Enter Focus Mode",
-//   PrintList = "Print Todo List",
-//   ClearDots = "Clear Dots",
-//   ReadAbout = "Read About AutoFocus",
-//   Quit = "Quit Program"
-// }
+enum MainMenuChoice {
+  AddNew = "Add New To-Do",
+  ReviewTodos = "Review & Dot Todos",
+  EnterFocus = "Enter Focus Mode",
+  PrintList = "Print To-Do List",
+  ClearDots = "Clear Dots",
+  ReadAbout = "Read About AutoFocus",
+  Quit = "Quit Program"
+}
 
-// const menuChoices: MainMenuChoice[] = [
-//   MainMenuChoice.AddNew,
-//   MainMenuChoice.ReviewTodos,
-//   MainMenuChoice.EnterFocus,
-//   MainMenuChoice.PrintList,
-//   MainMenuChoice.ClearDots,
-//   MainMenuChoice.ReadAbout,
-//   MainMenuChoice.Quit
-// ];
+const menuChoices: MainMenuChoice[] = [
+  MainMenuChoice.AddNew,
+  MainMenuChoice.ReviewTodos,
+  MainMenuChoice.EnterFocus,
+  MainMenuChoice.PrintList,
+  MainMenuChoice.ClearDots,
+  MainMenuChoice.ReadAbout,
+  MainMenuChoice.Quit
+];
 
-// export const promptUserWithMainMenu = (): MainMenuChoice => {
-//   return menuChoices[
-//     readlineSync.keyInSelect(menuChoices, menuPrompt, { cancel: false })
-//   ];
-// };
+export const promptUserWithMainMenuCLI = (): MainMenuChoice => {
+  return menuChoices[
+    readlineSync.keyInSelect(menuChoices, menuPrompt, { cancel: false })
+  ];
+};
 
-// export const promptUserForYNQ = (questionString: string): string => {
-//   return readlineSync
-//     .question(questionString, { limit: ["y", "n", "q", "Y", "N", "Q"] })
-//     .toLowerCase();
-// };
+export const promptUserForYNQcli = (questionString: string): string => {
+  return readlineSync
+    .question(questionString, { limit: ["y", "n", "q", "Y", "N", "Q"] })
+    .toLowerCase();
+};
 
-// // issue: Architect reviews for opportunity to make DRY, SOLID #299
-// export const promptUserForNewTodoItemCLI = (): ITodoItem | null => {
-//   const headerText = readlineSync.question(newItemTitlePrompt, {
-//     limit: /\w+/i,
-//     limitMessage: "Sorry, $<lastInput> is not a valid todo item title"
-//   }); // prevent empty input
-//   //// 113. let bodyText = "";
-//   if (headerText.toLowerCase() === "q") {
-//     return null;
-//   } else {
-//     //// 113. bodyText = readlineSync.question(newItemBodyPrompt);
-//     // issue: Dev implements momentjs datetime #103
-//     // issue: Dev implements ITodoItem uuid #104
-//     const newItem: ITodoItem = constructNewTodoItem(headerText); //// 113. bodyText
+// issue: Architect reviews for opportunity to make DRY, SOLID #299
+export const promptUserForNewTodoItemCLI = (): IToDoItem | null => {
+  const headerText = readlineSync.question(newItemTitlePrompt, {
+    limit: /\w+/i,
+    limitMessage: "Sorry, $<lastInput> is not a valid to-do item title"
+  }); // prevent empty input
+  //// 113. let bodyText = "";
+  if (headerText.toLowerCase() === "q") {
+    return null;
+  } else {
+    //// 113. bodyText = readlineSync.question(newItemBodyPrompt);
+    // issue: Dev implements momentjs datetime #103
+    // issue: Dev implements IToDoItem uuid #104
+    const newItem: IToDoItem = constructNewTodoItem(headerText); //// 113. bodyText
 
-//     generalPrint(`New todo item '${newItem.header}' successfully created!`);
+    generalPrintCLI(`New to-do item '${newItem.header}' successfully created!`);
 
-//     return newItem;
-//   }
-// };
+    return newItem;
+  }
+};
 
-// export const waitForKeyPress = () => {
-//   readlineSync.keyInPause(); // issue: Dev fixes ENTER key not quitting/ending focus mode #217
-// };
+export const waitForKeyPress = () => {
+  readlineSync.keyInPause(); // issue: Dev fixes ENTER key not quitting/ending focus mode #217
+};
 
-// // ****************************************
-// // PRINT FUNCTIONS
-// // ****************************************
+// ****************************************
+// PRINT FUNCTIONS
+// ****************************************
 
-// export const generalPrint = (s: string): void => {
-//   // tslint:disable-next-line:no-console
-//   console.log(s);
-// };
+export const generalPrintCLI = (s: string): void => {
+  // tslint:disable-next-line:no-console
+  console.log(s);
+};
 
-// export const printTodoItemCount = (list: ITodoItem[]): void => {
-//   generalPrint(`You have ${list.length} todo item${getPluralS(list.length)}.`);
-// };
+// todo: refactor to two functions: 1 string output function & 1 print function
+// note: this func was originally printTodoItemCount
+export const stringifyTodoItemCount = (list: IToDoItem[]): string => {
+  return `You have ${list.length} to-do item${getPluralS(list.length)}.`;
+};
 
-// const printTodoItemList = (list: ITodoItem[]): void => {
-//   generalPrint(makePrintableTodoItemList(list));
-// };
+// note: this func was originally printTodoItemCount
+export const printTodoItemCountCLI = (list: IToDoItem[]): void => {
+	generalPrintCLI(stringifyTodoItemCount(list));
+}
 
-// // issue: Architect reviews for opportunity to make DRY, SOLID #299
-// export const printUpdate = (todoList: ITodoItem[]): void => {
-//   if (!itemExists(todoList, "state", TodoState.Marked)) {
-//     generalPrint(`Your CMWTD is currently set to nothing.`);
-//   } else {
-//     generalPrint(`Your CMWTD is '${getCMWTD(todoList)}'.`);
-//   }
+// note: this func was originally printTodoItemList
+const printTodoItemListCLI = (list: IToDoItem[]): void => {
+  generalPrintCLI(makePrintableTodoItemList(list));
+};
 
-//   if (isEmpty(todoList)) {
-//     generalPrint("Your current Todo List is empty.");
-//   } else {
-//     generalPrint("Your current Todo List:");
-//     printTodoItemList(todoList);
-//   }
-// };
+// todo: move strings to top of file
+// issue: Architect reviews for opportunity to make DRY, SOLID #299
+export const printUpdateCLI = (toDoList: IToDoItem[]): void => {
+  if (!itemExists(toDoList, "state", TodoState.Marked)) {
+    generalPrintCLI(`Your CMWTD is currently set to nothing.`);
+  } else {
+    generalPrintCLI(`Your CMWTD is '${getCMWTD(toDoList)}'.`);
+  }
 
-// // ****************************************
-// // REVIEWING
-// // ****************************************
+  if (isEmpty(toDoList)) {
+    generalPrintCLI("Your current To-Do List is empty.");
+  } else {
+    generalPrintCLI("Your current To-Do List:");
+    printTodoItemListCLI(toDoList);
+  }
+};
 
-// export const conductReviewsLoopCLI = (
-//   todoList: INumberedItem[],
-//   originalCMWTD: string
-// ) => {
-//   // FVP step 2: user story: User is asked to answer yes, no, or quit per review item #170
-//   let tempCMWTD = String(originalCMWTD);
-//   for (let i = 0; i < todoList.length; i++) {
-//     //// get user answer
-//     let ans = getAnswer(tempCMWTD, todoList[i].item.header);
-//     if (ans === "y") {
-//       todoList[i].item.state = TodoState.Marked;
-//       tempCMWTD = todoList[i].item.header;
-//     }
-//     if (ans === "n") {
-//       // do nothing, and pass
-//     }
-//     if (ans === "q") {
-//       break;
-//     }
-//   }
-//   return todoList;
-// };
+// ****************************************
+// REVIEWING
+// ****************************************
 
-// export const conductAllReviewsCLI = (
-//   todoList: ITodoItem[],
-//   lastDone: string
-// ): ITodoItem[] => {
-//   const reviewStart = determineReviewStart(todoList, lastDone);
-//   let subsetList: INumberedItem[] = numberAndSlice(todoList, reviewStart);
-//   let reviewables = subsetList.filter(
-//     x => x["item"]["state"] === TodoState.Unmarked
-//   );
+export const conductReviewsLoopCLI = (
+  toDoList: INumberedItem[],
+  originalCMWTD: string
+) => {
+  // FVP step 2: user story: User is asked to answer yes, no, or quit per review item #170
+  let tempCMWTD = String(originalCMWTD);
+  for (let i = 0; i < toDoList.length; i++) {
+    //// get user answer
+    let ans = getAnswerCLI(tempCMWTD, toDoList[i].item.header);
+    if (ans === "y") {
+      toDoList[i].item.state = TodoState.Marked;
+      tempCMWTD = toDoList[i].item.header;
+    }
+    if (ans === "n") {
+      // do nothing, and pass
+    }
+    if (ans === "q") {
+      break;
+    }
+  }
+  return toDoList;
+};
 
-//   // CLI SPECIFIC CONDUCTING REVIEWS
-//   reviewables = conductReviewsLoopCLI(reviewables, getCMWTD(todoList));
+// todo: refactor to be atomic
+export const conductAllReviewsCLI = (
+  toDoList: IToDoItem[],
+  lastDone: string
+): IToDoItem[] => {
+  const reviewStart = determineReviewStart(toDoList, lastDone);
+  let subsetList: INumberedItem[] = numberAndSlice(toDoList, reviewStart);
+  let reviewables = subsetList.filter(
+    x => x["item"]["state"] === TodoState.Unmarked
+  );
 
-//   for (let i = 0; i < reviewables.length; i++) {
-//     // find item with index of  in subset list
-//     // if(indexOfItem(subsetList, 'index', reviewables[i].index) !== -1) // guard in-case
-//     subsetList[indexOfItem(subsetList, "index", reviewables[i].index)] =
-//       reviewables[i];
-//   }
+  // CLI SPECIFIC CONDUCTING REVIEWS
+  reviewables = conductReviewsLoopCLI(reviewables, getCMWTD(toDoList));
 
-//   // next, we will convert the subset list of INumberedItems back to ITodoItems
-//   const reviewedSubset: ITodoItem[] = subsetList.map(x => ({
-//     header: x.item.header,
-//     state: x.item.state
-//   }));
-//   // and lastly, we will put the two sections of the original list back together
-//   const firstPart = todoList.slice(0, reviewStart);
-//   // return the reviewed list
-//   return firstPart.concat(reviewedSubset);
-// };
+  for (let i = 0; i < reviewables.length; i++) {
+    // find item with index of  in subset list
+    // if(indexOfItem(subsetList, 'index', reviewables[i].index) !== -1) // guard in-case
+    subsetList[indexOfItem(subsetList, "index", reviewables[i].index)] =
+      reviewables[i];
+  }
 
-// export const getAnswer = (a: string, b: string): string => {
-//   return promptUserForYNQ(`Do you want to '${b}' more than '${a}'? (Y/N/Q) `);
-// };
+  // next, we will convert the subset list of INumberedItems back to ITodoItems
+  const reviewedSubset: IToDoItem[] = subsetList.map(x => ({
+    header: x.item.header,
+    state: x.item.state
+  }));
+  // and lastly, we will put the two sections of the original list back together
+  const firstPart = toDoList.slice(0, reviewStart);
+  // return the reviewed list
+  return firstPart.concat(reviewedSubset);
+};
 
-// // issue: Dev refactors printReviewSetupMessage to be atomic #273
-// const printReviewSetupMessage = (todoList: ITodoItem[]): void => {
-//   if (isEmpty(todoList)) {
-//     generalPrint(
-//       "There are no items to review. Please enter mores items and try again."
-//     );
-//   } else if (!itemExists(todoList, "state", TodoState.Unmarked)) {
-//     generalPrint(
-//       "There are no items left to dot. Please enter more items and try again."
-//     );
-//   } else {
-//     generalPrint("Marking the first ready item...");
-//   }
-// };
+const createReviewPrompt = (a: string, b: string): string => {
+	return `Do you want to '${b}' more than '${a}'? (Y/N/Q) `;
+}
 
-// // issue: Architect reviews for opportunity to make DRY, SOLID #299
-// const attemptReviewTodosCLI = (
-//   todoList: ITodoItem[],
-//   lastDone: string
-// ): ITodoItem[] => {
-//   if (isEmpty(todoList)) {
-//     return todoList;
-//   }
-//   todoList = setupReview(todoList);
-//   printReviewSetupMessage(todoList);
+export const getAnswerCLI = (a: string, b: string): string => {
+  return promptUserForYNQcli(createReviewPrompt(a, b));
+};
 
-//   // step 0: check to see if there are any non-complete, non-archived items
-//   if (readyToReview(todoList)) {
-//     // issue: Dev handles for list review when there are 2 or less items #107
-//     // issue: Architect designs option to always quit mid-menu #109
-//     // issue: Dev implements E2E test for CLA #110
-//     // issue: Dev implements todo item store using redux pattern #106
-//     todoList = conductAllReviewsCLI(todoList, lastDone);
-//     printUpdate(todoList);
-//   }
-//   return todoList;
-// };
+// issue: Dev refactors printReviewSetupMessageCLI to be atomic #273
+const printReviewSetupMessageCLI = (toDoList: IToDoItem[]): void => {
+  if (isEmpty(toDoList)) {
+    generalPrintCLI(
+      "There are no items to review. Please enter mores items and try again."
+    );
+  } else if (!itemExists(toDoList, "state", TodoState.Unmarked)) {
+    generalPrintCLI(
+      "There are no items left to dot. Please enter more items and try again."
+    );
+  } else {
+    generalPrintCLI("Marking the first ready item...");
+  }
+};
 
-// // ****************************************
-// // FOCUS MODE
-// // ****************************************
+// issue: Architect reviews for opportunity to make DRY, SOLID #299
+const attemptReviewTodosCLI = (
+  toDoList: IToDoItem[],
+  lastDone: string
+): IToDoItem[] => {
+  if (isEmpty(toDoList)) {
+    return toDoList;
+  }
+  toDoList = setupReview(toDoList);
+  printReviewSetupMessageCLI(toDoList);
 
-// // issue: Architect reviews for opportunity to make DRY, SOLID #299
-// const enterFocusCLI = (
-//   todoList: ITodoItem[],
-//   lastDone: string
-// ): [ITodoItem[], string] => {
-//   // 0. confirm that focusMode can be safely entered
-//   if (isEmpty(todoList)) {
-//     generalPrint(
-//       "There are no todo items. Please enter todo items and try again."
-//     );
-//     return [todoList, lastDone];
-//   }
-//   if (!itemExists(todoList, "state", TodoState.Marked)) {
-//     generalPrint(
-//       "There is no 'current most want to do' item. Please review your items and try again."
-//     );
-//     return [todoList, lastDone];
-//   }
+  // step 0: check to see if there are any non-complete, non-archived items
+  if (readyToReview(toDoList)) {
+    // issue: Dev handles for list review when there are 2 or less items #107
+    // issue: Architect designs option to always quit mid-menu #109
+    // issue: Dev implements E2E test for CLA #110
+    // issue: Dev implements to-do item store using redux pattern #106
+    toDoList = conductAllReviewsCLI(toDoList, lastDone);
+    printUpdateCLI(toDoList);
+  }
+  return toDoList;
+};
 
-//   // 1. clear the console view
-//   // tslint:disable-next-line:no-console
-//   console.clear();
+// ****************************************
+// FOCUS MODE
+// ****************************************
 
-//   // 2. show the current todo item
-//   generalPrint(`You are working on '${getCMWTD(todoList)}'`);
+// todo: refactor to make atomic
+// issue: Architect reviews for opportunity to make DRY, SOLID #299
+const enterFocusCLI = (
+  toDoList: IToDoItem[],
+  lastDone: string
+): [IToDoItem[], string] => {
+  // 0. confirm that focusMode can be safely entered
+  if (isEmpty(toDoList)) {
+    generalPrintCLI(
+      "There are no to-do items. Please enter to-do items and try again."
+    );
+    return [toDoList, lastDone];
+  }
+  if (!itemExists(toDoList, "state", TodoState.Marked)) {
+    generalPrintCLI(
+      "There is no 'current most want to do' item. Please review your items and try again."
+    );
+    return [toDoList, lastDone];
+  }
 
-//   // 3. wait for any key to continue
-//   waitForKeyPress();
+  // 1. clear the console view
+  // tslint:disable-next-line:no-console
+  console.clear();
 
-//   // 4. ask the user if they have work left to do on current item
-//   // If there is work left to do on the cmwtd item, a duplicate issue is created.
-//   // todo: refactor workLeft object to simple yes/no prompt or, more formalized interface
-//   // issue: Dev refactors out any type from function returns #374
-//   const response: any = { workLeft: "n" }; // initialize default "no" workLeft response
-//   if (promptUserForYNQ(`Do you have work left to do on this item?`) === "y") {
-//     response.workLeft = "y";
-//   }
+  // 2. show the current to-do item
+  generalPrintCLI(`You are working on '${getCMWTD(toDoList)}'`);
 
-//   // 5. mark the cmwtd item as done
-//   [todoList, lastDone] = conductFocus(todoList, lastDone, response);
+  // 3. wait for any key to continue
+  waitForKeyPress();
 
-//   return [todoList, lastDone];
-// };
+  // 4. ask the user if they have work left to do on current item
+  // If there is work left to do on the cmwtd item, a duplicate issue is created.
+  // to-do: refactor workLeft object to simple yes/no prompt or, more formalized interface
+  // issue: Dev refactors out any type from function returns #374
+  const response: any = { workLeft: "n" }; // initialize default "no" workLeft response
+  if (promptUserForYNQcli(`Do you have work left to do on this item?`) === "y") {
+    response.workLeft = "y";
+  }
 
-// const addNewCLI = (todoList: ITodoItem[]): ITodoItem[] => {
-//   const temp: ITodoItem | null = promptUserForNewTodoItemCLI();
-//   if (temp !== null) {
-//     todoList = addTodoToList(todoList, temp);
-//     // issue: Dev implements todo item store using redux pattern #106
-//   }
+  // 5. mark the cmwtd item as done
+  [toDoList, lastDone] = conductFocus(toDoList, lastDone, response);
 
-//   return todoList;
-// };
+  return [toDoList, lastDone];
+};
 
-// // ****************************************
-// // MAIN PROGRAM LOOP
-// // ****************************************
+const addNewCLI = (toDoList: IToDoItem[]): IToDoItem[] => {
+  const temp: IToDoItem | null = promptUserForNewTodoItemCLI();
+  if (temp !== null) {
+    toDoList = addTodoToList(toDoList, temp);
+    // issue: Dev implements to-do item store using redux pattern #106
+  }
 
-// // issue: Architect reviews for opportunity to make DRY, SOLID #299
-// // issue: Dev refactors out any type from function returns #374
-// const menuActions: any = {
-//   [MainMenuChoice.AddNew]: (
-//     todoList: ITodoItem[],
-//     lastDone: string
-//   ): [ITodoItem[], string, boolean] => {
-//     todoList = addNewCLI(todoList);
-//     printTodoItemCount(todoList);
-//     return [todoList, lastDone, true];
-//   },
-//   [MainMenuChoice.ReviewTodos]: (
-//     todoList: ITodoItem[],
-//     lastDone: string
-//   ): [ITodoItem[], string, boolean] => {
-//     todoList = attemptReviewTodosCLI(todoList, lastDone);
-//     return [todoList, lastDone, true];
-//   },
-//   [MainMenuChoice.EnterFocus]: (
-//     todoList: ITodoItem[],
-//     lastDone: string
-//   ): [ITodoItem[], string, boolean] => {
-//     [todoList, lastDone] = enterFocusCLI(todoList, lastDone);
-//     return [todoList, lastDone, true];
-//   },
-//   [MainMenuChoice.PrintList]: (
-//     todoList: ITodoItem[],
-//     lastDone: string
-//   ): [ITodoItem[], string, boolean] => {
-//     printUpdate(todoList);
-//     return [todoList, lastDone, true];
-//   },
-//   [MainMenuChoice.ClearDots]: (
-//     todoList: ITodoItem[],
-//     lastDone: string
-//   ): [ITodoItem[], string, boolean] => {
-//     generalPrint("Removing dots from dotted items...");
-//     generalPrint("Resetting the CMWTD...");
-//     return [undotAll(todoList), lastDone, true];
-//   },
-//   [MainMenuChoice.ReadAbout]: (
-//     todoList: ITodoItem[],
-//     lastDone: string
-//   ): [ITodoItem[], string, boolean] => {
-//     // issue: Dev adds about section text print out #128
-//     generalPrint("This is stub (placeholder) text. Please check back later.");
-//     return [todoList, lastDone, true];
-//   },
-//   [MainMenuChoice.Quit]: (
-//     todoList: ITodoItem[],
-//     lastDone: string
-//   ): [ITodoItem[], string, boolean] => {
-//     return [todoList, lastDone, false];
-//   }
-// };
+  return toDoList;
+};
 
-// // issue: Dev implements delete list feature #369
+// ****************************************
+// MAIN PROGRAM LOOP
+// ****************************************
 
-// interface IDeserializeableTodoList {
-//   todoList: ITodoItem[];
-//   lastDone: string;
-// }
+// issue: Architect reviews for opportunity to make DRY, SOLID #299
+// issue: Dev refactors out any type from function returns #374
+const menuActions: any = {
+  [MainMenuChoice.AddNew]: (
+    toDoList: IToDoItem[],
+    lastDone: string
+  ): [IToDoItem[], string, boolean] => {
+    toDoList = addNewCLI(toDoList);
+    printTodoItemCountCLI(toDoList);
+    return [toDoList, lastDone, true];
+  },
+  [MainMenuChoice.ReviewTodos]: (
+    toDoList: IToDoItem[],
+    lastDone: string
+  ): [IToDoItem[], string, boolean] => {
+    toDoList = attemptReviewTodosCLI(toDoList, lastDone);
+    return [toDoList, lastDone, true];
+  },
+  [MainMenuChoice.EnterFocus]: (
+    toDoList: IToDoItem[],
+    lastDone: string
+  ): [IToDoItem[], string, boolean] => {
+    [toDoList, lastDone] = enterFocusCLI(toDoList, lastDone);
+    return [toDoList, lastDone, true];
+  },
+  [MainMenuChoice.PrintList]: (
+    toDoList: IToDoItem[],
+    lastDone: string
+  ): [IToDoItem[], string, boolean] => {
+    printUpdateCLI(toDoList);
+    return [toDoList, lastDone, true];
+  },
+  [MainMenuChoice.ClearDots]: (
+    toDoList: IToDoItem[],
+    lastDone: string
+  ): [IToDoItem[], string, boolean] => {
+    generalPrintCLI("Removing dots from dotted items...");
+    generalPrintCLI("Resetting the CMWTD...");
+    return [undotAll(toDoList), lastDone, true];
+  },
+  [MainMenuChoice.ReadAbout]: (
+    toDoList: IToDoItem[],
+    lastDone: string
+  ): [IToDoItem[], string, boolean] => {
+    // issue: Dev adds about section text print out #128
+    generalPrintCLI("This is stub (placeholder) text. Please check back later.");
+    return [toDoList, lastDone, true];
+  },
+  [MainMenuChoice.Quit]: (
+    toDoList: IToDoItem[],
+    lastDone: string
+  ): [IToDoItem[], string, boolean] => {
+    return [toDoList, lastDone, false];
+  }
+};
 
-// const loadState = (): [ITodoItem[], string] => {
-//   const strBuffer = "Loading todo list";
-//   let todoList: ITodoItem[] = [];
-//   let lastDone: string = "";
-//   let jsonData: IDeserializeableTodoList = { todoList: [], lastDone: "" };
-//   try {
-//     jsonData = JSON.parse(fs.readFileSync("todos.json", "utf8"));
-//     console.log(strBuffer, "... load was successful!");
-//     todoList = jsonData["todoList"];
-//     lastDone = jsonData["lastDone"];
-//   } catch (err) {
-//     console.log(strBuffer, "... load was NOT successful :(");
-//   }
+// issue: Dev implements delete list feature #369
 
-//   return [todoList, lastDone];
-// };
+interface IDeserializeableTodoList {
+  toDoList: IToDoItem[];
+  lastDone: string;
+}
 
-// // SAVE STATE
-// // issue: Dev implements saving over-write check #370
-// const saveState = (todoList: ITodoItem[], lastDone: string): void => {
-//   const strBuffer = "Saving todo list";
-//   const jsonData = JSON.stringify({
-//     todoList: todoList,
-//     lastDone: lastDone
-//   });
-//   try {
-//     fs.writeFileSync("todos.json", jsonData, "utf8");
-//     console.log(strBuffer, "... save was successful!");
-//   } catch (err) {
-//     console.log(strBuffer, "... save was NOT successful :(");
-//   }
-// };
+const loadState = (): [IToDoItem[], string] => {
+  const strBuffer = "Loading to-do list";
+  let toDoList: IToDoItem[] = [];
+  let lastDone: string = "";
+  let jsonData: IDeserializeableTodoList = { toDoList: [], lastDone: "" };
+  try {
+    jsonData = JSON.parse(fs.readFileSync("todos.json", "utf8"));
+    console.log(strBuffer, "... load was successful!");
+    toDoList = jsonData["toDoList"];
+    lastDone = jsonData["lastDone"];
+  } catch (err) {
+    console.log(strBuffer, "... load was NOT successful :(");
+  }
 
-// export const mainCLI = (): void => {
-//   generalPrint(greetUser());
+  return [toDoList, lastDone];
+};
 
-//   // initialize program variables
-//   let todoList: ITodoItem[] = [];
-//   let lastDone: string = "";
+// SAVE STATE
+// issue: Dev implements saving over-write check #370
+const saveState = (toDoList: IToDoItem[], lastDone: string): void => {
+  const strBuffer = "Saving to-do list";
+  const jsonData = JSON.stringify({
+    toDoList: toDoList,
+    lastDone: lastDone
+  });
+  try {
+    fs.writeFileSync("todos.json", jsonData, "utf8");
+    console.log(strBuffer, "... save was successful!");
+  } catch (err) {
+    console.log(strBuffer, "... save was NOT successful :(");
+  }
+};
 
-//   [todoList, lastDone] = loadState(); // auto-load
+export const mainCLI = (): void => {
+  generalPrintCLI(greetUser());
 
-//   // start main program loop
-//   let running = true;
-//   while (running) {
-//     const answer = promptUserWithMainMenu();
-//     [todoList, lastDone, running] = menuActions[answer](todoList, lastDone);
-//   }
+  // initialize program variables
+  let toDoList: IToDoItem[] = [];
+  let lastDone: string = "";
 
-//   saveState(todoList, lastDone); // auto-save
+  [toDoList, lastDone] = loadState(); // auto-load
 
-//   generalPrint("Have a nice day!");
-// };
+  // start main program loop
+  let running = true;
+  while (running) {
+    const answer = promptUserWithMainMenuCLI();
+    [toDoList, lastDone, running] = menuActions[answer](toDoList, lastDone);
+  }
 
-// const sampleOutput: string = `Welcome to AutoFocus!
+  saveState(toDoList, lastDone); // auto-save
 
-// [1] Add New Todo
-// [2] Review & Dot Todos
-// [3] Enter Focus Mode
-// [4] Print Todo List
-// [5] Clear Dots
-// [6] Read About AutoFocus
-// [7] Quit Program
+  generalPrintCLI("Have a nice day!");
+};
 
-// Please choose from the menu above [1...7]: 1
-// Enter todo item name (ie. wash the dishes).
-// Enter 'Q' to quit: Make cup of coffee
-// New todo item 'Make cup of coffee' created!
-// Your list now has 1 todo item.
-// `;
+const sampleOutput: string = `Welcome to AutoFocus!
 
-// export const printSampleOutput = (): void => {
-//   generalPrint(sampleOutput);
-// };
+[1] Add New To-Do
+[2] Review & Dot Todos
+[3] Enter Focus Mode
+[4] Print To-Do List
+[5] Clear Dots
+[6] Read About AutoFocus
+[7] Quit Program
+
+Please choose from the menu above [1...7]: 1
+Enter to-do item name (ie. wash the dishes).
+Enter 'Q' to quit: Make cup of coffee
+New to-do item 'Make cup of coffee' created!
+Your list now has 1 to-do item.
+`;
+
+export const printSampleOutput = (): void => {
+  generalPrintCLI(sampleOutput);
+};
 
 export default {};

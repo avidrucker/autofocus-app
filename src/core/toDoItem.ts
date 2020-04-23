@@ -2,13 +2,9 @@ export enum TodoState {
   Unmarked,
   Marked,
   Completed
-  // Archived,
-  // Null,
-  // Error
 }
 
-export interface ITodoItem {
-  // body?: string | null;
+export interface IToDoItem {
   // created: string;
   header: string;
   // modified: string;
@@ -20,8 +16,8 @@ export const constructNewTodoItem = (
   headerText: string,
   // bodyText: string = "",
   stateIn: TodoState = TodoState.Unmarked
-): ITodoItem => {
-  const newItem: ITodoItem = {
+): IToDoItem => {
+  const newItem: IToDoItem = {
     // body: bodyText,
     // created:"temp_created_date",
     header: headerText,
@@ -49,21 +45,21 @@ export const getMark: any = {
   // [TodoState.Error] : () => `[${ERROR}]`
 };
 
-export const stringifyTodoItem = (i: ITodoItem): string => {
+export const stringifyTodoItem = (i: IToDoItem): string => {
   return `${getMark[i.state]()} ${i.header}`;
 };
 
-// "todo item is ready for review"
-export const isReady = (i: ITodoItem): boolean => {
+// "to-do item is ready for review"
+export const isReady = (i: IToDoItem): boolean => {
   return i.state === TodoState.Unmarked || i.state === TodoState.Marked;
 };
 
 // issue: Dev implements deep copy of UUID, & updated modified date value #283
-export const setState = (i: ITodoItem, newState: TodoState): ITodoItem => {
-  return constructNewTodoItem(i.header, newState); // note: this creates a NEW todo item
+export const setState = (i: IToDoItem, newState: TodoState): IToDoItem => {
+  return constructNewTodoItem(i.header, newState); // note: this creates a NEW to-do item
 };
 
-// note: this creates a NEW todo item
-export const undot = (i: ITodoItem): ITodoItem => {
+// note: this creates a NEW to-do item
+export const undot = (i: IToDoItem): IToDoItem => {
   return i.state === TodoState.Marked ? constructNewTodoItem(i.header) : i;
 };

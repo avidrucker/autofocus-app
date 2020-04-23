@@ -31,7 +31,7 @@ export const SampleHomeMol3Unmarked = (props: any) =>
 			}
 			<LinkBtnMol
 					disabled={true}
-					text="Add Todo (demo)"
+					text="Add To-Do (demo)"
 					to="/add-new"
 				/>
 		</section>

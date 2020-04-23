@@ -25,7 +25,7 @@ export default class AddNewOrg extends React.Component
   };
 
   handleSubmit(event: any) {
-    alert('A todo was submitted: ' + this.state.value);
+    alert('A to-do was submitted: ' + this.state.value);
     event.preventDefault();
 	};
 	
@@ -44,11 +44,11 @@ export default class AddNewOrg extends React.Component
 				/>
 				{/* bg-green */}
 				<section className="flex flex-column justify-between h-100 pa3 tc">
-					<label htmlFor="todo-input">Enter a new todo:</label>
+					<label htmlFor="to-do-input">Enter a new to-do:</label>
 					<section>
 						<textarea
 							onChange={this.handleChange}
-							id="todo-input"
+							id="to-do-input"
 							className="w-100 h34"
 							// style={{width: '100%'}}
 							placeholder="eg. Wash the dishes"
@@ -58,7 +58,7 @@ export default class AddNewOrg extends React.Component
 						{/* now {this.state.value.length} */}
 						{
 							this.state.btnDisabled && this.state.value !== "" &&
-							<label>Please make todo longer</label>
+							<label>Please make to-do longer</label>
 						}
 					</section>
 					{
