@@ -1,6 +1,6 @@
-import { ITodoItem } from "./core/todoItem";
+import { IToDoItem } from "./core/toDoItem";
 
-const getActionFromUser = (): [ITodoItem[], string] => {
+const getActionFromUser = (): [IToDoItem[], string] => {
 	return [
 		[
 			{header:"eat dinner", state:0},
@@ -9,11 +9,11 @@ const getActionFromUser = (): [ITodoItem[], string] => {
 		], "hi"];
 }
 
-export const mainWebApp = (todoList: ITodoItem[], lastDone: string): [ITodoItem[], string] => {
-	[todoList, lastDone] = getActionFromUser();
+export const mainWebApp = (toDoList: IToDoItem[], lastDone: string): [IToDoItem[], string] => {
+	[toDoList, lastDone] = getActionFromUser();
 
-	console.log(`todoList`, todoList);
+	console.log(`toDoList`, toDoList);
 	console.log(`lastDone: ${lastDone}`);
 
-	return [todoList, lastDone];
+	return [toDoList, lastDone];
 }

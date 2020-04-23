@@ -1,4 +1,4 @@
-//import { throwBadInputError } from "../unit/test-util";  // todo: restore this code
+//import { throwBadInputError } from "../unit/test-util";  // to-do: restore this code
 
 export const getPluralS = (n: number): string => {
   return n !== 1 ? "s" : "";
@@ -12,7 +12,7 @@ export const isNeg1 = (i: number): boolean => {
 
 export const getMinFrom0Up = (x: number, y: number): number => {
   if (x < -1 || y < -1) {
-    //throwBadInputError(); // todo: restore this code
+    //throwBadInputError(); // to-do: restore this code
   }
   return isNeg1(x) && isNeg1(y)
     ? -1

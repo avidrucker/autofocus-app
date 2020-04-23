@@ -23,7 +23,7 @@ export const SampleHomeMol2Unmarked = (props: any) =>
 				<LinkBtnMol
 					className="b"
 					disabled={false}
-					text="Add Todo (default)"
+					text="Add To-Do (default)"
 					to="/add-new"
 				/>
 			}
@@ -32,7 +32,7 @@ export const SampleHomeMol2Unmarked = (props: any) =>
 				<LinkBtnMol
 					className="b"
 					disabled={false}
-					text="Add Todo (demo)"
+					text="Add To-Do (demo)"
 					to="/add-new-3"
 				/>
 			}

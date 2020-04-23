@@ -8,15 +8,15 @@ export const prototypeMap = (key: string, props: any) => {
 	if(key === "welcome") // start on welcome screen
 		return <HomeOrg {...props} designId="001" h2="Welcome Home" step="A" />;
 	if(key === "add-new") // add new is all that can be done at first
-	 return <AddNewOrg {...props} designId="002" h2="Add Todo" step="B" />;
+	 return <AddNewOrg {...props} designId="002" h2="Add To-Do" step="B" />;
 	if(key === "home") // after adding the first new item, we return home, now with our first item
 		return <HomeOrg {...props} designId="004" h2="Home 1 Unmarked" step="C" />;
 	if(key === "add-new-2") // let's add a 2nd item
-		return <AddNewOrg {...props} designId="002" h2="Add Todo" step="D" />;
+		return <AddNewOrg {...props} designId="002" h2="Add To-Do" step="D" />;
 	if(key === "home-2") // we now see 2 items on the home screen
 		return <HomeOrg {...props} designId="004" h2="Home 2 Unmarked" step="E" />;
 	if(key === "add-new-3") // let's add a 3rd item
-		return <AddNewOrg {...props} designId="002" h2="Add Todo" step="F" />;
+		return <AddNewOrg {...props} designId="002" h2="Add To-Do" step="F" />;
 	if(key === "home-3") // we now see 3 items on the home screen. let's go into review mode next.
 		return <HomeOrg {...props} designId="004" h2="Home 3 Unmarked" step="G" />;
 	if(key === "review") // we review the first reviewable item

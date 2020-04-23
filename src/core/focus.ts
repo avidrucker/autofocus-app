@@ -1,41 +1,41 @@
-import { constructNewTodoItem, ITodoItem, TodoState } from "./todoItem";
-import { getLastMarked, itemExists, getCMWTD } from "./todoList";
+import { constructNewTodoItem, IToDoItem, TodoState } from "./toDoItem";
+import { getLastMarked, itemExists, getCMWTD } from "./toDoList";
 import { isEmpty } from "./util";
 
 // issue: Dev refactors out any type from function returns #374
 export const conductFocus = (
-  todoList: ITodoItem[],
+  toDoList: IToDoItem[],
   lastDone: string,
   response: any
-): [ITodoItem[], string] => {
+): [IToDoItem[], string] => {
   // return w/o affecting state if focus mode cannot be entered
-  if (isEmpty(todoList) || !itemExists(todoList, "state", TodoState.Marked)) {
-    return [todoList, lastDone]; // no focus exit
+  if (isEmpty(toDoList) || !itemExists(toDoList, "state", TodoState.Marked)) {
+    return [toDoList, lastDone]; // no focus exit
   }
   const workLeft: string = response.workLeft; // this will be either 'y' or 'n'
   if (workLeft === "y") {
-    todoList = duplicateLastMarked(todoList);
+    toDoList = duplicateLastMarked(toDoList);
   }
-  [todoList, lastDone] = markLastMarkedComplete(todoList, lastDone);
-  return [todoList, lastDone];
+  [toDoList, lastDone] = markLastMarkedComplete(toDoList, lastDone);
+  return [toDoList, lastDone];
 };
 
 export const markLastMarkedComplete = (
-  todoList: ITodoItem[],
+  toDoList: IToDoItem[],
   lastDone: string
-): [ITodoItem[], string] => {
-  lastDone = getCMWTD(todoList); // 1. update last done
-  todoList[getLastMarked(todoList)].state = TodoState.Completed; // 2. set it to completed
-  return [todoList, lastDone];
+): [IToDoItem[], string] => {
+  lastDone = getCMWTD(toDoList); // 1. update last done
+  toDoList[getLastMarked(toDoList)].state = TodoState.Completed; // 2. set it to completed
+  return [toDoList, lastDone];
 };
 
-export const duplicateLastMarked = (todoList: ITodoItem[]): ITodoItem[] => {
-  const newItem: ITodoItem = constructNewTodoItem(getCMWTD(todoList));
-  todoList.push(newItem);
-  return todoList;
+export const duplicateLastMarked = (toDoList: IToDoItem[]): IToDoItem[] => {
+  const newItem: IToDoItem = constructNewTodoItem(getCMWTD(toDoList));
+  toDoList.push(newItem);
+  return toDoList;
 };
 
 // issue: Architect determines whether to use readyToFocus() #275
-export const readyToFocus = (todoList: ITodoItem[]): boolean => {
-  return itemExists(todoList, "state", TodoState.Marked);
+export const readyToFocus = (toDoList: IToDoItem[]): boolean => {
+  return itemExists(toDoList, "state", TodoState.Marked);
 };

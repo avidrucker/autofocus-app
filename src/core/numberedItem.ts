@@ -1,6 +1,6 @@
-import { ITodoItem } from "./todoItem";
+import { IToDoItem } from "./toDoItem";
 
 export interface INumberedItem {
-  item: ITodoItem;
+  item: IToDoItem;
   index: number;
 }

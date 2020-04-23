@@ -31,7 +31,7 @@ export default function HomeOrg (props: any) {
 							<div>THE DEMO</div>
 						}
 				*/}
-				{/* 1 TODO */}
+				{/* 1 TO-DO */}
 				{
 					props.h2 === "Home 1 Unmarked" &&
 					<SampleHomeMol1Unmarked demoCurrent="C" />

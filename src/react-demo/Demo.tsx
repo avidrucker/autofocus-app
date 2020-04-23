@@ -11,7 +11,7 @@ function Demo() {
   return (
     <main className="border-box">
 			<Switch>
-				{/* todo: refactor route to be a dynamic list generated from array of paths*/}
+				{/* to-do: refactor route to be a dynamic list generated from array of paths*/}
 				<Route
 					exact path='/add-new'
 					render={() => prototypeMap("add-new", demoProp)} />

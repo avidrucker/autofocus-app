@@ -5,7 +5,7 @@ import { SampleReviewMol } from './SampleReviewMol';
 import { AppWrapper } from './AppWrapper';
 
 export default function ReviewOrg (props: any) {
-	const todoList: string[] = ['finish trig problem sets','wash the dishes','pack for trip tomorrow'];
+	const toDoList: string[] = ['finish trig problem sets','wash the dishes','pack for trip tomorrow'];
 	return (
 		<AppWrapper {...props}>
 			<HeaderMol
@@ -16,11 +16,11 @@ export default function ReviewOrg (props: any) {
 			<section className="flex flex-column justify-between h-100 pa3 tc">
 			{
 				props.step === "H" &&
-				<SampleReviewMol cmwtd={todoList[0]} current={todoList[1]} demoCurrent={props.step} />
+				<SampleReviewMol cmwtd={toDoList[0]} current={toDoList[1]} demoCurrent={props.step} />
 			}
 			{
 				props.step === "I" &&
-				<SampleReviewMol cmwtd={todoList[0]} current={todoList[2]} demoCurrent={props.step} />
+				<SampleReviewMol cmwtd={toDoList[0]} current={toDoList[2]} demoCurrent={props.step} />
 			}
 			{/* DEFAULT CASE */}
 			{

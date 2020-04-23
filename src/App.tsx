@@ -1,14 +1,14 @@
 import React from 'react';
 
 import { mainWebApp } from './model';
-import { ITodoItem } from './core/todoItem';
+import { IToDoItem } from './core/toDoItem';
 
 function App() {
-	let todoList: ITodoItem[] = [];
+	let toDoList: IToDoItem[] = [];
 	let lastDone: string = "";
-	[todoList, lastDone] = mainWebApp(todoList, lastDone);
+	[toDoList, lastDone] = mainWebApp(toDoList, lastDone);
 
-	const listItems = <ul>{todoList.map(x => <li>{x.header}</li>)}</ul>;
+	const listItems = <ul>{toDoList.map(x => <li>{x.header}</li>)}</ul>;
 
   return (
     <section className="debug">

@@ -16,7 +16,7 @@ export const SampleHomeMol2Marked = (props: any) =>
 			<LinkBtnMol
 				className="b"
 				disabled={false}
-				text="Focus on Todo"
+				text="Focus on To-Do"
 				to="/focus"
 			/>
 			<LinkBtnMol
@@ -28,7 +28,7 @@ export const SampleHomeMol2Marked = (props: any) =>
 			<LinkBtnMol
 				className=""
 				disabled={true}
-				text="Add Todo"
+				text="Add To-Do"
 				to="/add-new"
 			/>
 		</section>
