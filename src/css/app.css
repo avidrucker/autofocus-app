@@ -1,1 +1,14 @@
 @import "tachyons";
+
+.marked {
+	list-style-type: disc;
+}
+
+.unmarked {
+	list-style-type: circle;
+}
+
+.complete {
+	list-style-type: none;
+	text-decoration:line-through;
+}
